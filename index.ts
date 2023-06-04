@@ -125,6 +125,18 @@ const getLocation = async () => {
         chalk.underline(location)
     );
 
+    //check if location has any files
+    let files = fs.readdirSync(location);
+
+    if (files.length > 0) {
+      console.log(
+        chalk.red(
+          "The directory you selected is not empty. Please select an empty directory."
+        )
+      );
+      continue;
+    }
+
     if (useLocation) selectingDir = false;
   }
 
@@ -149,8 +161,7 @@ const menu = {
         "What programming language would you like to use?",
         choices
       );
-      let language = choices[choiceVal];
-
+      let language = choices[choiceVal] || "Typescript";
       if (language === "Exit") return;
 
       console.log(
