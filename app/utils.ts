@@ -47,7 +47,6 @@ export const question = (query: string) => {
   return new Promise<string>((resolve) => {
     rl.question("👌 ", (answer) => {
       if (answer.length === 0) return resolve(null);
-
       resolve(answer);
     });
   });
@@ -92,7 +91,7 @@ export const choice = (query: string, choices: string[], help: string = "") => {
 
   return new Promise<number>((resolve) => {
     rl.question("👌 ", (answer) => {
-      if (!answer) resolve(0);
+      if (!answer || answer === "") resolve(0);
 
       let int = parseInt(answer);
 
@@ -109,7 +108,7 @@ export const choice = (query: string, choices: string[], help: string = "") => {
             choices.filter(
               (choice) =>
                 choice.toLowerCase().includes(answer.toLowerCase()) &&
-                answer.length >= Math.ceil(choice.length / 2) + 1
+                answer.length >= Math.ceil(choice.length / 2)
             )[0]
           )
         );
@@ -140,6 +139,8 @@ export const selectDirectory = async () => {
 
   let newDir = async () => {
     let dir = await question("Enter new folder name");
+
+    if (!dir) return selectDirectory();
 
     if (!dir.endsWith("/")) dir = dir + "/";
 
