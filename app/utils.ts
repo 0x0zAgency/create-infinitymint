@@ -92,6 +92,8 @@ export const choice = (query: string, choices: string[], help: string = "") => {
 
   return new Promise<number>((resolve) => {
     rl.question("👌 ", (answer) => {
+      if (!answer) resolve(0);
+
       let int = parseInt(answer);
 
       if (int > choices.length) {
@@ -133,7 +135,6 @@ export const selectDirectory = async () => {
     "Current Directory",
     "Enter Directory",
     "Find Directory",
-    "New Directory",
     "Cancel",
   ]);
 
@@ -203,7 +204,7 @@ export const selectDirectory = async () => {
         return await listDir(dir.split("/").slice(0, -2).join("/") + "/");
       }
 
-      selectedDir = dir + choices[choiceIndex];
+      if (choices[choiceIndex]) selectedDir = dir + choices[choiceIndex];
 
       if (!selectedDir.endsWith("/")) selectedDir = selectedDir + "/";
       return await listDir(selectedDir);
@@ -211,9 +212,6 @@ export const selectDirectory = async () => {
 
     return await listDir(selectedDir);
   } else if (selectedChoice === 3) {
-    await newDir();
-    return selectDirectory();
-  } else if (selectedChoice === 4) {
     return null;
   }
 };
