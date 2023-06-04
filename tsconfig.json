@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "umd",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": false,
+    "allowJs": true,
+    "rootDirs": ["./app"],
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "paths": {
+      "@typechain-types/*": ["./typechain-types/*"]
+    },
+    "esModuleInterop": true
+  },
+  "exclude": ["dist", "dist/tests", "node_modules"],
+  "include": ["./app"],
+  "files": ["./index.ts"]
+}

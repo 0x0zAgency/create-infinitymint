@@ -1,0 +1,51 @@
+node_modules
+.env
+coverage
+coverage.json
+/typechain
+/typechain-types
+
+# Nix
+/.direnv/*
+
+# Hardhat files
+cache/
+artifacts/
+/src/
+/public/
+
+.mnemonics
+.temp_project
+
+/projects/bundles/
+/projects/compiled/
+/projects/deployed/
+/projects/updates/
+
+# Deployments
+/deployments/hardhat/
+/deployments/ganache/
+
+# InfinityMint files
+infinitymint.config.ts
+.session
+/gems/__*
+/gems/@*
+/alpha/__gems/
+/beta/__gems/
+/*/__gems/
+temp/
+.uuid
+.DS_Store
+dist/
+
+# Docs
+_www/
+docs/
+
+# Nix
+nix/result
+
+# Docker volumes
+ganache-data
+console
