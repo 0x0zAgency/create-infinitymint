@@ -98,13 +98,30 @@ const createInfinityMintFramework = async (
 
   await getRepository(url, location);
   await runCommand("cd " + location + " && npm install");
+  await exitScreen(location);
+};
 
+const exitScreen = async (location) => {
+  console.log(chalk.underline.green("\nWelcome to InfinityMint!"));
   console.log(
-    chalk.green(
-      "Successfully created a new InfinityMint at " + chalk.underline(location)
+    `\nYou can now ${chalk.magenta(
+      "start setting up your infinitymint"
+    )} by running ${chalk.cyan(`
+    cd ${location} && npx infinitymint
+    `)}`
+  );
+  console.log(
+    chalk.gray(
+      "Please check out our auto-generated documentation at " +
+        chalk.underline("https://docs.infinitymint.app")
     )
   );
-  console.log(`please run cd ${location} && npx infinitymint`);
+  console.log(
+    chalk.gray(
+      "You can also hand written tutorials at " +
+        chalk.underline("https://guide.infinitymint.app")
+    )
+  );
 };
 
 const createInfinityMintBoilerplate = async (
@@ -116,14 +133,7 @@ const createInfinityMintBoilerplate = async (
 
   await getRepository(url, location);
   await runCommand("cd " + location + " && npm install");
-
-  console.log(
-    chalk.green(
-      "Successfully created a new InfinityMint boilerplate at " +
-        chalk.underline(location)
-    )
-  );
-  console.log(`please run cd ${location} && npx infinitymint`);
+  await exitScreen(location);
 };
 
 const getLocation = async () => {
@@ -267,6 +277,7 @@ const menu = {
   exit: {
     key: "Exit",
     onSelected: async () => {
+      await exitScreen("test");
       process.exit(0);
     },
   },
