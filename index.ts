@@ -37,17 +37,42 @@ const getRepository = async (base: string, location: string) => {
       return await getRepository(base, location);
     }
   } else {
+    console.log(
+      chalk.yellow(
+        "Fetching from " +
+          (base + "/archive/refs/heads/master.zip") +
+          " extracting to " +
+          location
+      )
+    );
     let fetched = await fetch(base + "/archive/refs/heads/master.zip");
     let zip = new jszip();
-    let data = await fetched.blob();
+    let data = await fetched.arrayBuffer();
     let content = await zip.loadAsync(data);
     let files = content.files;
     //write files
     for (let file in files) {
-      let dir = file.split(".")[0];
-      if (!dir.endsWith("/")) dir = dir + dir.split("/").slice(-1)[0] + "/";
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(path.join(dir, file), await files[file].async("string"));
+      //remove first folder
+      let actualLocation = file.split("/").slice(1).join("/");
+
+      if (path.join(location, actualLocation) === location) continue;
+
+      if (
+        file.endsWith("/") &&
+        !fs.existsSync(path.join(location, actualLocation))
+      ) {
+        //if it is a directory
+        fs.mkdirSync(path.join(location, actualLocation), {
+          recursive: true,
+        });
+        continue;
+      }
+
+      //write the file
+      fs.writeFileSync(
+        path.join(location, actualLocation),
+        await files[file].async("string")
+      );
     }
   }
 
@@ -56,7 +81,8 @@ const getRepository = async (base: string, location: string) => {
 
   console.log(
     chalk.green(
-      "Successfully fetched a new InfinityMint at " + chalk.underline(location)
+      "Successfully downloaded a new InfinityMint and extracted at " +
+        chalk.underline(location)
     )
   );
 };
@@ -101,24 +127,28 @@ const createInfinityMintBoilerplate = async (
 };
 
 const getLocation = async () => {
-  console.log(
-    chalk.underline.gray(
-      "InfinityMint will now ask you to select a location to create your application."
-    )
-  );
-  console.log(
-    chalk.gray("Your current working directory is " + chalk.underline(cwd()))
-  );
-
   let selectingDir = true;
   let location: string;
   while (selectingDir) {
+    console.log(
+      chalk.underline.gray(
+        "\nPlease select a directory to create your InfinityMint application in."
+      )
+    );
+    console.log(
+      chalk.gray(
+        "Current selected directory:" + chalk.underline(location || cwd())
+      )
+    );
     location = await selectDirectory();
 
     if (location === null) {
       selectingDir = false;
       break;
     }
+
+    if (location === undefined)
+      return errorAndClear("Failed to select a directory");
 
     let useLocation = await confirm(
       "Are you sure you want to create a React InfinityMint at " +
