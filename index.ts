@@ -11,6 +11,8 @@ import jszip from "jszip";
 import fs from "fs";
 import path from "path";
 
+let packageManager;
+
 const getRepository = async (base: string, location: string) => {
   let choices = ["Use Git", "Fetch", "Exit"];
   let choiceVal = await choice(
@@ -97,7 +99,7 @@ const createInfinityMintFramework = async (
   url = url + "-" + famework + "-" + language + "-starterkit";
 
   await getRepository(url, location);
-  await runCommand("cd " + location + " && npm install");
+  await runCommand("cd " + location + ` && ${packageManager} install`);
   await exitScreen(location);
 };
 
@@ -107,7 +109,13 @@ const exitScreen = async (location) => {
     `\nYou can now ${chalk.magenta(
       "start setting up your infinitymint"
     )} by running ${chalk.cyan(`
-    cd ${location} && npx infinitymint
+    cd ${location} && ${
+      packageManager === "node"
+        ? "npm"
+          ? packageManager === "yarn"
+          : "yarn dlx "
+        : "pnpm"
+    } infinitymint
     `)}`
   );
   console.log(
@@ -132,7 +140,7 @@ const createInfinityMintBoilerplate = async (
   url = url + "-" + language + "-boilerplate";
 
   await getRepository(url, location);
-  await runCommand("cd " + location + " && npm install");
+  await runCommand("cd " + location + ` && ${packageManager} install`);
   await exitScreen(location);
 };
 
@@ -187,21 +195,21 @@ const menu = {
   react: {
     key: "React",
     onSelected: async () => {
-      let choices = ["Webpack", "Vite", "Exit"];
+      let choices = ["Webpack (default)", "Vite", "Exit"];
       let choiceVal = await choice(
         "What bundler would you like to use?",
         choices
       );
-      let bundler = choices[choiceVal];
+      let bundler = choices[choiceVal].split(" ")[0];
 
       if (bundler === "Exit") return;
 
-      choices = ["Typescript", "Javascript", "Exit"];
+      choices = ["Typescript (default)", "Javascript", "Exit"];
       choiceVal = await choice(
         "What programming language would you like to use?",
         choices
       );
-      let language = choices[choiceVal] || "Typescript";
+      let language = choices[choiceVal].split(" ")[0];
       if (language === "Exit") return;
 
       console.log(
@@ -247,13 +255,13 @@ const menu = {
           "Boilerplates are for people who want to create their own InfinityMint from scrath with no bundlers or frameworks."
         )
       );
-      let choices = ["Typescript", "Javascript", "Exit"];
+      let choices = ["Typescript (default)", "Javascript", "Exit"];
       let choiceVal = await choice(
         "What programming language would you like to use?",
         choices
       );
 
-      let language = choices[choiceVal];
+      let language = choices[choiceVal].split(" ")[0];
 
       if (language === "Exit") return;
 
@@ -291,6 +299,19 @@ const menu = {
     console.log(chalk.cyanBright("\nCreate Infinitymint Utility"));
     console.log(
       chalk.underline.gray("This script will help you create an InfinityMint")
+    );
+
+    let choices = ["npm (default)", "pnpm", "yarn"];
+    let choiceVal = await choice(
+      "What package manager would you like to use?",
+      choices
+    );
+    packageManager = choices[choiceVal].split(" ")[0];
+
+    console.log(
+      chalk.magenta(
+        `\nUsing ${packageManager} to create a InfinityMint application.`
+      )
     );
 
     let menuVal = Object.values(menu);
