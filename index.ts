@@ -303,7 +303,7 @@ const menu = {
 
     let choices = ["npm (default)", "pnpm", "yarn"];
     let choiceVal = await choice(
-      "What package manager would you like to use?",
+      "What package manager would you like to use? (if you don't know, use npm)",
       choices
     );
     packageManager = choices[choiceVal].split(" ")[0];
