@@ -1,6 +1,6 @@
 {
   "name": "create-infinitymint",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "creates an infinitymint application",
   "main": "dist/index.js",
   "bin": "index.js",
