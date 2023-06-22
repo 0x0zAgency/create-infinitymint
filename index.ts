@@ -109,13 +109,10 @@ const exitScreen = async (location) => {
     `\nYou can now ${chalk.magenta(
       "start setting up your infinitymint"
     )} by running ${chalk.cyan(`
-    cd ${location} && ${
-      packageManager === "node"
-        ? "npm"
-          ? packageManager === "yarn"
-          : "yarn dlx "
-        : "pnpm"
-    } infinitymint
+    cd ${location} && ${(() => {
+      if (packageManager === "pnpm") return "pnpx";
+      return packageManager === "yarn" ? "yarn dlx" : "npx";
+    })()} infinitymint
     `)}`
   );
   console.log(
